@@ -4,6 +4,8 @@ import 'package:presence/app/modules/add_pegawai/bindings/add_pegawai_binding.da
 import 'package:presence/app/modules/add_pegawai/views/add_pegawai_view.dart';
 import 'package:presence/app/modules/home/bindings/home_binding.dart';
 import 'package:presence/app/modules/home/views/home_view.dart';
+import 'package:presence/app/modules/login/bindings/login_binding.dart';
+import 'package:presence/app/modules/login/views/login_view.dart';
 
 // ignore_for_file: constant_identifier_names
 
@@ -24,6 +26,11 @@ class AppPages {
       name: _Paths.ADD_PEGAWAI,
       page: () => AddPegawaiView(),
       binding: AddPegawaiBinding(),
+    ),
+    GetPage(
+      name: _Paths.LOGIN,
+      page: () => LoginView(),
+      binding: LoginBinding(),
     ),
   ];
 }
