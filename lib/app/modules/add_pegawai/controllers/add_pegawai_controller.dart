@@ -42,10 +42,12 @@ class AddPegawaiController extends GetxController {
 
           // Login Ulang
 
-          await auth.signInWithEmailAndPassword(
+         UserCredential userCredentialAdmin =  await auth.signInWithEmailAndPassword(
             email: emailAdmin,
             password: passAdminC.text,
           );
+
+          print(userCredentialAdmin);
 
           // Close Dialog
           Get.back();
