@@ -12,8 +12,12 @@ class AddPegawaiController extends GetxController {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  RxBool isLoading = false.obs;
+  RxBool isLoadingAddsPegawai = false.obs;
+
   Future<void> prosesAddPegawai() async {
     if (passAdminC.text.isNotEmpty) {
+      isLoadingAddsPegawai.value = true;
       try {
         String emailAdmin = auth.currentUser!.email!;
 
@@ -42,7 +46,8 @@ class AddPegawaiController extends GetxController {
 
           // Login Ulang
 
-         UserCredential userCredentialAdmin =  await auth.signInWithEmailAndPassword(
+          UserCredential userCredentialAdmin =
+              await auth.signInWithEmailAndPassword(
             email: emailAdmin,
             password: passAdminC.text,
           );
@@ -75,19 +80,24 @@ class AddPegawaiController extends GetxController {
         Get.snackbar("Terjadi Kesalahan", "Tidak dapat menambahkan Pegawai");
       }
     } else {
+      isLoading.value = false;
       Get.snackbar('Terjadi error', 'password wajib diisi untuk validasi');
     }
   }
 
-  void addPegawai() async {
+  Future<void> addPegawai() async {
     if (nameC.text.isNotEmpty &&
         emailC.text.isNotEmpty &&
         nipC.text.isNotEmpty) {
+      isLoading.value = true;
       Get.defaultDialog(
           title: 'Validasi Admin',
           content: Column(
             children: [
               Text('Masukkan Password untuk validasi admin'),
+              SizedBox(
+                height: 10,
+              ),
               TextField(
                 controller: passAdminC,
                 autocorrect: false,
@@ -102,14 +112,22 @@ class AddPegawaiController extends GetxController {
           actions: [
             OutlinedButton(
                 onPressed: () {
+                  isLoading.value = false;
                   Get.back();
                 },
                 child: Text("Cancel")),
-            ElevatedButton(
-                onPressed: () async {
-                  await prosesAddPegawai();
-                },
-                child: Text("Add Pegawai"))
+            Obx(
+              () => ElevatedButton(
+                  onPressed: () async {
+                    if (isLoadingAddsPegawai.isFalse) {
+                      await prosesAddPegawai();
+                    }
+                    isLoading.value = false;
+                  },
+                  child: Text(isLoadingAddsPegawai.isFalse
+                      ? "Add Pegawai"
+                      : "Loading")),
+            )
           ]);
     } else {
       Get.snackbar("Terjadi Kesalahan", "NIP,Nama, dan email harus diisi");

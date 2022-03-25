@@ -29,11 +29,16 @@ class LoginView extends GetView<LoginController> {
               decoration: InputDecoration(
                   labelText: 'Password', border: OutlineInputBorder()),
             ),
-            ElevatedButton(
-              onPressed: () {
-                controller.login();
-              },
-              child: Text("Login"),
+            Obx(
+              () => ElevatedButton(
+                onPressed: () async {
+                  if (controller.isLoading.isFalse) {
+                    await controller.login();
+                  }
+                },
+                child:
+                    Text(controller.isLoading.isFalse ? "Login" : "Loading..."),
+              ),
             ),
             TextButton(
               onPressed: () {},
