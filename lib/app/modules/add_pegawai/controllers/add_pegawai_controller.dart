@@ -21,9 +21,9 @@ class AddPegawaiController extends GetxController {
       try {
         String emailAdmin = auth.currentUser!.email!;
 
-        UserCredential userCredentialAdmin =
-            await auth.signInWithEmailAndPassword(
-                email: emailAdmin, password: passAdminC.text);
+        // UserCredential userCredentialAdmin =
+        //     await auth.signInWithEmailAndPassword(
+        //         email: emailAdmin, password: passAdminC.text);
 
         UserCredential pegawaiCredential =
             await auth.createUserWithEmailAndPassword(
@@ -37,6 +37,7 @@ class AddPegawaiController extends GetxController {
             "name": nameC.text,
             "email": emailC.text,
             "uid": uid,
+            "role" : "pegawai",
             "createdAt": DateTime.now().toIso8601String()
           });
 
