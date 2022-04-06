@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import 'package:presence/app/modules/add_pegawai/bindings/add_pegawai_binding.dart';
 import 'package:presence/app/modules/add_pegawai/views/add_pegawai_view.dart';
+import 'package:presence/app/modules/forgot_password/bindings/forgot_password_binding.dart';
+import 'package:presence/app/modules/forgot_password/views/forgot_password_view.dart';
 import 'package:presence/app/modules/home/bindings/home_binding.dart';
 import 'package:presence/app/modules/home/views/home_view.dart';
 import 'package:presence/app/modules/login/bindings/login_binding.dart';
@@ -38,6 +40,11 @@ class AppPages {
       name: _Paths.NEW_PASSWORD,
       page: () => NewPasswordView(),
       binding: NewPasswordBinding(),
+    ),
+    GetPage(
+      name: _Paths.FORGOT_PASSWORD,
+      page: () => ForgotPasswordView(),
+      binding: ForgotPasswordBinding(),
     ),
   ];
 }
