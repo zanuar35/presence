@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:presence/app/routes/app_pages.dart';
 
 import '../controllers/profile_controller.dart';
 
@@ -57,12 +58,13 @@ class ProfileView extends GetView<ProfileController> {
                   height: 20,
                 ),
                 ListTile(
-                  onTap: () {},
+                  onTap: () =>
+                      Get.toNamed(Routes.UPDATE_PROFILE, arguments: user),
                   leading: Icon(Icons.person),
                   title: Text("Update Profile"),
                 ),
                 ListTile(
-                  onTap: () {},
+                  onTap: () => Get.toNamed(Routes.UPDATE_PASSWORD),
                   leading: Icon(Icons.vpn_key_rounded),
                   title: Text("Update Password"),
                 ),
