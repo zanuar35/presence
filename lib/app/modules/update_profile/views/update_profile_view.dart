@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -54,7 +56,57 @@ class UpdateProfileView extends GetView<UpdateProfileController> {
               ),
             ),
             SizedBox(
-              height: 30,
+              height: 20,
+            ),
+            Text(
+              "Photo Profile",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GetBuilder<UpdateProfileController>(builder: (c) {
+                  if (c.image != null) {
+                    return ClipOval(
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        child: Image.file(
+                          File(c.image!.path),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  } else {
+                    if (user["profile"] != null) {
+                      return ClipOval(
+                        child: Container(
+                          height: 100,
+                          width: 100,
+                          child: Image.network(
+                            user["profile"],
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Text("Tidak ada data image");
+                    }
+                  }
+                }),
+                TextButton(
+                  onPressed: () {
+                    controller.pickImage();
+                  },
+                  child: Text("choose"),
+                )
+              ],
+            ),
+            SizedBox(
+              height: 10,
             ),
             Obx(
               () => ElevatedButton(
