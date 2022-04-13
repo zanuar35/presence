@@ -82,15 +82,25 @@ class UpdateProfileView extends GetView<UpdateProfileController> {
                     );
                   } else {
                     if (user["profile"] != null) {
-                      return ClipOval(
-                        child: Container(
-                          height: 100,
-                          width: 100,
-                          child: Image.network(
-                            user["profile"],
-                            fit: BoxFit.cover,
+                      return Column(
+                        children: [
+                          ClipOval(
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              child: Image.network(
+                                user["profile"],
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                        ),
+                          TextButton(
+                            onPressed: () {
+                              controller.deleteProfile(user['uid']);
+                            },
+                            child: Text("delete"),
+                          )
+                        ],
                       );
                     } else {
                       return Text("Tidak ada data image");
@@ -117,7 +127,7 @@ class UpdateProfileView extends GetView<UpdateProfileController> {
                 },
                 child: Text(controller.isLoading.isFalse
                     ? "Update Profile"
-                    : "Loading"),
+                    : "Loading..."),
               ),
             )
           ],
