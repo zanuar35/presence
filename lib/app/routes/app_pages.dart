@@ -28,10 +28,10 @@ class AppPages {
 
   static final routes = [
     GetPage(
-      name: _Paths.HOME,
-      page: () => HomeView(),
-      binding: HomeBinding(),
-    ),
+        name: _Paths.HOME,
+        page: () => HomeView(),
+        binding: HomeBinding(),
+        transition: Transition.fadeIn),
     GetPage(
       name: _Paths.ADD_PEGAWAI,
       page: () => AddPegawaiView(),
@@ -53,10 +53,10 @@ class AppPages {
       binding: ForgotPasswordBinding(),
     ),
     GetPage(
-      name: _Paths.PROFILE,
-      page: () => ProfileView(),
-      binding: ProfileBinding(),
-    ),
+        name: _Paths.PROFILE,
+        page: () => ProfileView(),
+        binding: ProfileBinding(),
+        transition: Transition.fadeIn),
     GetPage(
       name: _Paths.UPDATE_PROFILE,
       page: () => UpdateProfileView(),
