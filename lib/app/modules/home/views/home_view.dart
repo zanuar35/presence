@@ -54,7 +54,11 @@ class HomeView extends GetView<HomeController> {
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          Text("Belum ada lokasi"),
+                          Text(
+                            user['position'] != null
+                                ? "${user['position']}"
+                                : 'Belum ada Lokasi',
+                          ),
                         ],
                       )
                     ],
@@ -220,7 +224,11 @@ class HomeView extends GetView<HomeController> {
         style: TabStyle.fixedCircle,
         items: [
           TabItem(icon: Icons.home, title: 'Home'),
-          TabItem(icon: Icons.fingerprint_rounded, title: 'Add'),
+          TabItem(
+              icon: controller.isLoading.isTrue
+                  ? Icons.accessible_forward
+                  : Icons.fingerprint_rounded,
+              title: 'Add'),
           TabItem(icon: Icons.person, title: 'Profile'),
         ],
         initialActiveIndex: pageC.pageIndex.value,
