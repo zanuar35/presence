@@ -8,6 +8,7 @@ class AddPegawaiController extends GetxController {
   TextEditingController emailC = TextEditingController();
   TextEditingController nipC = TextEditingController();
   TextEditingController passAdminC = TextEditingController();
+  TextEditingController jobC = TextEditingController();
 
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -36,8 +37,9 @@ class AddPegawaiController extends GetxController {
             "nip": nipC.text,
             "name": nameC.text,
             "email": emailC.text,
+            "job": jobC.text,
             "uid": uid,
-            "role" : "pegawai",
+            "role": "pegawai",
             "createdAt": DateTime.now().toIso8601String()
           });
 
@@ -89,6 +91,7 @@ class AddPegawaiController extends GetxController {
   Future<void> addPegawai() async {
     if (nameC.text.isNotEmpty &&
         emailC.text.isNotEmpty &&
+        jobC.text.isNotEmpty &&
         nipC.text.isNotEmpty) {
       isLoading.value = true;
       Get.defaultDialog(
@@ -131,7 +134,7 @@ class AddPegawaiController extends GetxController {
             )
           ]);
     } else {
-      Get.snackbar("Terjadi Kesalahan", "NIP,Nama, dan email harus diisi");
+      Get.snackbar("Terjadi Kesalahan", "NIP,Nama,job dan email harus diisi");
     }
   }
 }
