@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:presence/app/routes/app_pages.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class PageIndexController extends GetxController {
   RxInt pageIndex = 0.obs;
@@ -18,9 +19,17 @@ class PageIndexController extends GetxController {
         Map<String, dynamic> data = await _determinePosition();
         if (data['error'] != true) {
           Position position = data['position'];
-          await updatePosition(position);
-          print('latitude = ${position.latitude}');
-          print('longitude = ${position.longitude}');
+
+          List<Placemark> placemark = await placemarkFromCoordinates(
+              position.latitude, position.longitude);
+
+          String address = "${placemark[0].street}, "
+              "${placemark[0].subLocality}, "
+              "${placemark[0].locality}, ";
+
+          await updatePosition(position, address);
+
+          print(address);
           Get.snackbar("Success", "Berhasil Absen",
               backgroundColor: Colors.green[200], colorText: Colors.black87);
         } else {
@@ -38,11 +47,12 @@ class PageIndexController extends GetxController {
     }
   }
 
-  Future<void> updatePosition(Position position) async {
+  Future<void> updatePosition(Position position, String address) async {
     String uid = auth.currentUser!.uid;
 
     await firestore.collection("pegawai").doc(uid).update({
-      "position": {"lat": position.latitude, "long": position.longitude}
+      "position": {"lat": position.latitude, "long": position.longitude},
+      'address': address
     });
   }
 

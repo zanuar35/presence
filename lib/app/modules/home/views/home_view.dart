@@ -54,10 +54,15 @@ class HomeView extends GetView<HomeController> {
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          Text(
-                            user['position'] != null
-                                ? "${user['position']}"
-                                : 'Belum ada Lokasi',
+                          SizedBox(height: 5),
+                          SizedBox(
+                            width: 200,
+                            child: Text(
+                                user['address'] != null
+                                    ? "${user['address']}"
+                                    : 'Belum ada Lokasi',
+                                style: TextStyle(height: 1.4),
+                                overflow: TextOverflow.clip),
                           ),
                         ],
                       )
