@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:presence/app/routes/app_pages.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -27,10 +28,12 @@ class PageIndexController extends GetxController {
               "${placemark[0].subLocality}, "
               "${placemark[0].locality}, ";
 
+          // Presensi
           await updatePosition(position, address);
+          await presensi(position, address);
 
           print(address);
-          Get.snackbar("Success", "Berhasil Absen",
+          Get.snackbar("Success", "Berhasil mengisi daftar hadir",
               backgroundColor: Colors.green[200], colorText: Colors.black87);
         } else {
           Get.snackbar("Tejadi Kesalahan", data['message']);
@@ -44,6 +47,37 @@ class PageIndexController extends GetxController {
       default:
         pageIndex.value = i;
         Get.offAllNamed(Routes.HOME);
+    }
+  }
+
+  Future<void> presensi(Position position, String address) async {
+    String uid = auth.currentUser!.uid;
+
+    CollectionReference<Map<String, dynamic>> colPresence =
+        firestore.collection("pegawai").doc(uid).collection("presence");
+
+    QuerySnapshot<Map<String, dynamic>> snapPresence = await colPresence.get();
+
+    // Get tgl waktu sekarang
+    // year-month-day
+    DateTime now = DateTime.now();
+    String todayDocID = DateFormat.yMd().format(now).replaceAll("/", "-");
+
+    if (snapPresence.docs.isEmpty) {
+      // Belum pernah absen & set absen masuk
+
+      await colPresence.doc(todayDocID).set({
+        "date": now.toIso8601String(),
+        "masuk": {
+          "date": now.toIso8601String(),
+          "lat": position.latitude,
+          "long": position.longitude,
+          "address": address,
+          "status": "Di dalam area"
+        }
+      });
+    } else {
+      // ...
     }
   }
 
