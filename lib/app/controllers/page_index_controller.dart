@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_is_empty
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,10 +33,6 @@ class PageIndexController extends GetxController {
           // Presensi
           await updatePosition(position, address);
           await presensi(position, address);
-
-          print(address);
-          Get.snackbar("Success", "Berhasil mengisi daftar hadir",
-              backgroundColor: Colors.green[200], colorText: Colors.black87);
         } else {
           Get.snackbar("Tejadi Kesalahan", data['message']);
         }
@@ -63,9 +61,8 @@ class PageIndexController extends GetxController {
     DateTime now = DateTime.now();
     String todayDocID = DateFormat.yMd().format(now).replaceAll("/", "-");
 
-    if (snapPresence.docs.isEmpty) {
+    if (snapPresence.docs.length == 0) {
       // Belum pernah absen & set absen masuk
-
       await colPresence.doc(todayDocID).set({
         "date": now.toIso8601String(),
         "masuk": {
@@ -76,8 +73,34 @@ class PageIndexController extends GetxController {
           "status": "Di dalam area"
         }
       });
+      Get.snackbar("Success", "Berhasil mengisi daftar hadir",
+          backgroundColor: Colors.green[200], colorText: Colors.black87);
     } else {
-      // ...
+      // sudah pernah absen -> cek hari ini apakah sudah absen masuk/keluar atau belum
+      DocumentSnapshot<Map<String, dynamic>> todayDoc =
+          await colPresence.doc(todayDocID).get();
+
+      if (todayDoc.exists == true) {
+        // tinggal absen keluar atau sudah absen masuk & keluar
+        Map<String, dynamic>? dataPresenceToday = todayDoc.data();
+        if (dataPresenceToday?["keluar"] != null) {
+          // sudah absen masuk && keluar
+          Get.snackbar("Sukses", "Anda sudah absen masuk dan keluar");
+        } else {
+          // absen keluar
+          await colPresence.doc(todayDocID).update({
+            "keluar": {
+              "date": now.toIso8601String(),
+              "lat": position.latitude,
+              "long": position.longitude,
+              "address": address,
+              "status": "Di dalam area"
+            }
+          });
+          Get.snackbar("Sukses", "Anda sudah absen keluar",
+              backgroundColor: Colors.red, colorText: Colors.white);
+        }
+      }
     }
   }
 
