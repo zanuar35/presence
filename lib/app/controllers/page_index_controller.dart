@@ -30,9 +30,12 @@ class PageIndexController extends GetxController {
               "${placemark[0].subLocality}, "
               "${placemark[0].locality}, ";
 
+          double distance = Geolocator.distanceBetween(
+              -7.2769296, 112.7474415, position.latitude, position.longitude);
+
           // Presensi
           await updatePosition(position, address);
-          await presensi(position, address);
+          await presensi(position, address, distance);
         } else {
           Get.snackbar("Tejadi Kesalahan", data['message']);
         }
@@ -48,7 +51,8 @@ class PageIndexController extends GetxController {
     }
   }
 
-  Future<void> presensi(Position position, String address) async {
+  Future<void> presensi(
+      Position position, String address, double distance) async {
     String uid = auth.currentUser!.uid;
 
     CollectionReference<Map<String, dynamic>> colPresence =
@@ -60,6 +64,11 @@ class PageIndexController extends GetxController {
     // year-month-day
     DateTime now = DateTime.now();
     String todayDocID = DateFormat.yMd().format(now).replaceAll("/", "-");
+    String status = "Di luar area";
+    if (distance <= 200) {
+      // didalam area
+      status = "Di dalam area";
+    }
 
     if (snapPresence.docs.length == 0) {
       // Belum pernah absen & set absen masuk
@@ -70,7 +79,7 @@ class PageIndexController extends GetxController {
           "lat": position.latitude,
           "long": position.longitude,
           "address": address,
-          "status": "Di dalam area"
+          "status": status
         }
       });
       Get.snackbar("Success", "Berhasil mengisi daftar hadir",
@@ -94,7 +103,7 @@ class PageIndexController extends GetxController {
               "lat": position.latitude,
               "long": position.longitude,
               "address": address,
-              "status": "Di dalam area"
+              "status": status
             }
           });
           Get.snackbar("Sukses", "Anda sudah absen keluar",
