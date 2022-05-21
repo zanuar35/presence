@@ -6,8 +6,10 @@ import 'package:intl/intl.dart';
 import '../controllers/detail_presensi_controller.dart';
 
 class DetailPresensiView extends GetView<DetailPresensiController> {
+  final Map<String, dynamic> data = Get.arguments;
   @override
   Widget build(BuildContext context) {
+    print(data);
     return Scaffold(
         appBar: AppBar(
           title: Text('Detail Presensi'),
@@ -27,7 +29,8 @@ class DetailPresensiView extends GetView<DetailPresensiController> {
                 children: [
                   Center(
                     child: Text(
-                      DateFormat.yMEd().format(DateTime.now()),
+                      DateFormat.yMMMMEEEEd()
+                          .format(DateTime.parse(data['date'])),
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -43,12 +46,16 @@ class DetailPresensiView extends GetView<DetailPresensiController> {
                   ),
                   Text(
                     "Jam : " +
-                        DateFormat.jms().format(
-                          DateTime.now(),
-                        ),
+                        DateFormat.jms()
+                            .format(DateTime.parse(data['masuk']['date'])),
                   ),
-                  Text("Posisi : -6.9, 106.8"),
-                  Text("Status : Hadir"),
+                  Text(
+                      "Posisi : ${data['masuk']!['lat']}, ${data['masuk']!['long']} "),
+                  Text("Status : ${data['masuk']['status']}"),
+                  Text("Jarak : " +
+                      data['masuk']['distance'].toString().split(".").first +
+                      " meter"),
+                  Text("address : " + data['masuk']['address']),
                   SizedBox(
                     height: 20,
                   ),
@@ -56,14 +63,29 @@ class DetailPresensiView extends GetView<DetailPresensiController> {
                     "Keluar",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  Text(
-                    "Jam : " +
-                        DateFormat.jms().format(
-                          DateTime.now(),
-                        ),
-                  ),
-                  Text("Posisi : -6.9, 106.8"),
-                  Text("Status : Hadir"),
+                  Text(data['keluar']?['date'] == null
+                      ? 'Jam : -'
+                      : "Jam : " +
+                          DateFormat.jms()
+                              .format(DateTime.parse(data['keluar']['date']))),
+                  Text(data['keluar']?['lat'] == null &&
+                          data['keluar']?['long'] == null
+                      ? 'Posisi : -'
+                      : "Posisi : ${data['keluar']!['lat']}, ${data['keluar']!['long']}"),
+                  Text(data['keluar']?['status'] == null
+                      ? 'Status : -'
+                      : "Status : " + data['keluar']['status']),
+                  Text(data['keluar']?['distance'] == null
+                      ? 'jarak : -'
+                      : "Jarak : " +
+                          data['keluar']['distance']
+                              .toString()
+                              .split(".")
+                              .first +
+                          " meter"),
+                  Text(data['keluar']?['address'] == null
+                      ? "address : - "
+                      : "address : " + data['keluar']['address']),
                 ],
               ),
             ),
