@@ -30,8 +30,9 @@ class PageIndexController extends GetxController {
               "${placemark[0].subLocality}, "
               "${placemark[0].locality}, ";
 
+          // check distance 2 point
           double distance = Geolocator.distanceBetween(
-              -7.2769296, 112.7474415, position.latitude, position.longitude);
+              -7.315249, 112.7528711, position.latitude, position.longitude);
 
           // Presensi
           await updatePosition(position, address);
@@ -64,8 +65,9 @@ class PageIndexController extends GetxController {
     // year-month-day
     DateTime now = DateTime.now();
     String todayDocID = DateFormat.yMd().format(now).replaceAll("/", "-");
+
     String status = "Di luar area";
-    if (distance <= 200) {
+    if (distance <= 2000) {
       // didalam area
       status = "Di dalam area";
     }
@@ -79,7 +81,8 @@ class PageIndexController extends GetxController {
           "lat": position.latitude,
           "long": position.longitude,
           "address": address,
-          "status": status
+          "status": status,
+          "distance": distance
         }
       });
       Get.snackbar("Success", "Berhasil mengisi daftar hadir",
@@ -103,13 +106,28 @@ class PageIndexController extends GetxController {
               "lat": position.latitude,
               "long": position.longitude,
               "address": address,
-              "status": status
+              "status": status,
+              "distance": distance
             }
           });
           Get.snackbar("Sukses", "Anda sudah absen keluar",
               backgroundColor: Colors.red, colorText: Colors.white);
         }
+      } else {
+        await colPresence.doc(todayDocID).set({
+          "date": now.toIso8601String(),
+          "masuk": {
+            "date": now.toIso8601String(),
+            "lat": position.latitude,
+            "long": position.longitude,
+            "address": address,
+            "status": status,
+            "distance": distance
+          }
+        });
       }
+      Get.snackbar("Success", "Berhasil mengisi daftar hadir",
+          backgroundColor: Colors.blue[400], colorText: Colors.black87);
     }
   }
 
