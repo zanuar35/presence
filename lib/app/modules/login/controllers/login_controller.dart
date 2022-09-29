@@ -19,6 +19,7 @@ class LoginController extends GetxController {
         print(userCredential);
 
         if (userCredential.user != null) {
+          // disable emailVerification
           if (userCredential.user!.emailVerified == true) {
             isLoading.value = false;
             if (passC.text == "12345678") {
